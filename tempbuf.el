@@ -295,7 +295,7 @@ value."
               (let ((msg (format tempbuf-kill-message name)))
                 (funcall tempbuf-kill-message-function msg) ;; シンプルに渡す
                 ;; 実行中のタイマーが上書きされないよう、単純に3秒後にクリア
-                (run-with-timer 3 nil (lambda () (message "")))))))))))
+                (run-with-timer 3 nil (lambda () (message "")))))))))))))
 	;; (let ((name (buffer-name buffer)))
 	;;   (catch 'tempbuf-skip-kill
 	;;     (run-hooks 'tempbuf-kill-hook)
