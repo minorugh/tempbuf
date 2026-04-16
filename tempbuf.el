@@ -286,16 +286,16 @@ value."
             (kill-buffer buffer))
           (when tempbuf-kill-message
             (unless (buffer-live-p buffer)
-              ;; メッセージを作成
+        (let ((name (buffer-name buffer)))
+          (catch 'tempbuf-skip-kill
+            (run-hooks 'tempbuf-kill-hook)
+            (kill-buffer buffer))
+          (when tempbuf-kill-message
+            (unless (buffer-live-p buffer)
               (let ((msg (format tempbuf-kill-message name)))
-                ;; 表示する
-                (funcall tempbuf-kill-message-function "%s" msg)
-                ;; 3秒後に、そのメッセージがまだ残っていれば消す
-                (run-with-timer 3 nil
-                                (lambda (m)
-                                  (when (string= (current-message) m)
-                                    (message nil)))
-                                msg)))))))))
+                (funcall tempbuf-kill-message-function msg) ;; シンプルに渡す
+                ;; 実行中のタイマーが上書きされないよう、単純に3秒後にクリア
+                (run-with-timer 3 nil (lambda () (message "")))))))))))
 	;; (let ((name (buffer-name buffer)))
 	;;   (catch 'tempbuf-skip-kill
 	;;     (run-hooks 'tempbuf-kill-hook)
