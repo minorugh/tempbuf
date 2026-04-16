@@ -271,38 +271,25 @@ the current buffer will be killed if it has no unsaved content and no
 processes running.
 The optional argument CT specifies a pre-calculated \"(current-time)\"
 value."
+(defun tempbuf-expire (&optional ct)
+  "Expire the current buffer."
   (let ((buffer (current-buffer)))
     (run-hooks 'tempbuf-expire-hook)
     (when (buffer-live-p buffer)
       (if (or buffer-offer-save
-	      (and buffer-file-name (buffer-modified-p))
-	      (get-buffer-process buffer))
-	  (progn
-	    (tempbuf-post-command)
-	    (tempbuf-grace ct))
+              (and buffer-file-name (buffer-modified-p))
+              (get-buffer-process buffer))
+          (progn
+            (tempbuf-post-command)
+            (tempbuf-grace ct))
+        ;; ここから修正：二重になっていた箇所を整理
         (let ((name (buffer-name buffer)))
           (catch 'tempbuf-skip-kill
             (run-hooks 'tempbuf-kill-hook)
             (kill-buffer buffer))
-          (when tempbuf-kill-message
-            (unless (buffer-live-p buffer)
-        (let ((name (buffer-name buffer)))
-          (catch 'tempbuf-skip-kill
-            (run-hooks 'tempbuf-kill-hook)
-            (kill-buffer buffer))
-          (when tempbuf-kill-message
-            (unless (buffer-live-p buffer)
-              (let ((msg (format tempbuf-kill-message name)))
-                (funcall tempbuf-kill-message-function msg) ;; シンプルに渡す
-                ;; 実行中のタイマーが上書きされないよう、単純に3秒後にクリア
-                (run-with-timer 3 nil (lambda () (message "")))))))))))))
-	;; (let ((name (buffer-name buffer)))
-	;;   (catch 'tempbuf-skip-kill
-	;;     (run-hooks 'tempbuf-kill-hook)
-	;;     (kill-buffer buffer))
-	;;   (when tempbuf-kill-message
-	;;     (unless (buffer-live-p buffer)
-        ;;   (funcall tempbuf-kill-message-function (format tempbuf-kill-message name)))))))))
+          ;; メッセージが不要なら、このwhenブロックごと削除してもOKです
+          (when (and tempbuf-kill-message (not (buffer-live-p buffer)))
+            (funcall tempbuf-kill-message-function (format tempbuf-kill-message name))))))))
 
 (defun tempbuf-post-command ()
   "Update `tempbuf-last-time'."
