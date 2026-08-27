@@ -1,4 +1,4 @@
-;;; tempbuf.el --- kill unused buffers in the background
+;;; tempbuf.el --- kill unused buffers in the background  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2001, 2002, 2011 Michele Bini
 ;; Copyright (c) 2010 Eric Hanchrow
@@ -44,11 +44,11 @@
 
 ;; * Installation
 
-;; To turn on this mode on dired buffers, put this line in your .emacs:
+;; To turn on this mode on Dired buffers, put this line in your .emacs:
 
 ;;     (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
 
-;; I find it also very convenient to turn on it on in emacs
+;; I find it also very convenient to turn on it on in Emacs
 ;; customization buffers, W3 (Emacs' Web Browser) buffers, UNIX 'man'
 ;; documentation buffers, and any buffer with view-mode activated.
 
